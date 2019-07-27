@@ -3,7 +3,7 @@
     <el-main height="auto">
       <el-row>
         <el-col :span="24" align="right" class="newMember">
-          <el-button type="primary" icon="el-icon-plus" @click="dialogAdd = true">新增課程</el-button>
+          <el-button type="primary" icon="el-icon-plus" @click="addDialogVisible = true">新增課程</el-button>
         </el-col>
       </el-row>
 
@@ -15,12 +15,33 @@
           <template slot-scope="scope">
             <el-button type="primary" icon="el-icon-full-screen" circle title="報到" @click="scan(scope.row)" />
             <el-button type="primary" icon="el-icon-s-data" circle title="報到狀況" @click="enterStatus(scope.row)" />
-            <el-button type="primary" icon="el-icon-download" circle title="匯入" @click="importExcel(scope.row)" />
+            <el-button type="primary" icon="el-icon-download" circle title="匯入" @click="enterImportExcel(scope.row)" />
             <el-button type="primary" icon="el-icon-upload2" circle title="匯出" @click="exportExcel(scope.row)" />
             <el-button type="danger" icon="el-icon-delete" circle title="刪除" @click="deleteClass(scope.row)" />
           </template>
         </el-table-column>
       </el-table>
+
+      <el-dialog
+        title="新增課程"
+        :visible.sync="addDialogVisible"
+        width="30%"
+      >
+
+        <el-form ref="form" :model="newForm" label-width="100px">
+          <el-form-item label="課程名稱">
+            <el-input v-model="newForm.className" />
+          </el-form-item>
+          <el-form-item label="上課日期">
+            <el-input v-model="newForm.date" />
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="addDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="summitForm">送 出</el-button>
+        </span>
+      </el-dialog>
 
     </el-main>
   </el-container>
@@ -32,6 +53,10 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      newForm: {
+        className: '',
+        date: ''
+      },
       addDialogVisible: false,
       classList: [
         {
@@ -48,14 +73,29 @@ export default {
   },
   created() {},
   methods: {
-    importExcel(row) {
+    summitForm() {
       console.log('123')
+      this.addDialogVisible = false
+    },
+    enterImportExcel(row) {
+      this.$router.push({
+        path: '/excel/import',
+        query: {
+          classID: row.id,
+          t: +new Date() // 保证每次点击路由的query项都是不一样的，确保会重新刷新view
+        }
+      })
     },
     exportExcel(row) {
-      console.log('123')
+      this.$router.push({
+        path: '/excel/export',
+        query: {
+          classID: row.id,
+          t: +new Date() // 保证每次点击路由的query项都是不一样的，确保会重新刷新view
+        }
+      })
     },
     scan(row) {
-      console.log('123')
       this.$router.push({
         path: '/scan/index',
         query: {
@@ -65,7 +105,6 @@ export default {
       })
     },
     enterStatus(row) {
-      console.log(row)
       this.$router.push({
         path: '/status/index',
         query: {
