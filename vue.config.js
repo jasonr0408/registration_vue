@@ -45,6 +45,13 @@ module.exports = {
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
+      },
+      '/go-registration': {
+        target: 'http://127.0.0.1:9487',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API2]: ''
+        }
       }
     },
     after: require('./mock/mock-server.js')

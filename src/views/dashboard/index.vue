@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import { newClass } from '@/api/registration'
 
 export default {
   name: 'Dashboard',
@@ -76,6 +77,13 @@ export default {
     summitForm() {
       console.log('123')
       this.addDialogVisible = false
+      newClass(this.newForm).then(response => {
+        this.$message({
+          message: '新增課程成功',
+          type: 'success'
+        })
+        this.listLoading = false
+      })
     },
     enterImportExcel(row) {
       this.$router.push({
