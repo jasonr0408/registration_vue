@@ -3,20 +3,20 @@
     <el-main height="auto">
       <el-row>
         <el-col :span="24">
-          <el-button type="primary" style="width: 100%;" icon="el-icon-full-screen" @click="scan">報到</el-button>
+          <el-button type="primary" style="width: 100%;" icon="el-icon-full-screen" @click="goToScan">報到</el-button>
         </el-col>
       </el-row>
 
       <!-- table-->
       <el-table :data="list" style="width: 100%">
-        <el-table-column align="center" prop="status" label="狀態">
+        <el-table-column prop="status" label="狀態">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status" type="success">報到完成</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="employeeID" label="員工編號" />
-        <el-table-column align="center" prop="name" label="暱稱" />
-        <el-table-column align="center" prop="department" label="部門名稱" />
+        <el-table-column prop="name" label="暱稱" />
+        <el-table-column prop="department" label="部門名稱" />
+        <el-table-column prop="employeeID" label="員工編號" />
       </el-table>
 
     </el-main>
@@ -25,6 +25,7 @@
 
 <script>
 import { MessageBox } from 'mint-ui'
+import { getStudentList } from '@/api/registration'
 
 export default {
   name: 'Dashboard',
@@ -32,20 +33,7 @@ export default {
     return {
       addDialogVisible: false,
       classID: 0,
-      list: [
-        {
-          'status': true,
-          'employeeID': 123,
-          'name': '帥哥JR',
-          'department': '董事會'
-        },
-        {
-          'status': false,
-          'employeeID': 234,
-          'name': '阿因',
-          'department': '人資'
-        }
-      ],
+      list: [],
       listLoading: true
     }
   },
@@ -64,15 +52,27 @@ export default {
         })
       })
     }
+    this.getStudentListFromApi()
     // 用class id抓api報到清單
   },
   methods: {
-    scan() {
+    goToScan() {
       this.$router.push({
         path: '/scan/index',
         query: {
           classID: this.classID,
           t: +new Date() // 保证每次点击路由的query项都是不一样的，确保会重新刷新view
+        }
+      })
+    },
+    getStudentListFromApi() {
+      getStudentList(this.classID).then(response => {
+        if (!response.error) {
+          this.list = response.data
+          this.listLoading = false
+        } else {
+          this.$message.error('取Api失敗')
+          MessageBox('提示', 'Api失敗')
         }
       })
     }

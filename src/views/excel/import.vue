@@ -17,6 +17,7 @@
 <script>
 import UploadExcelComponent from '@/components/UploadExcel/index.vue'
 import { MessageBox } from 'mint-ui'
+import { importStudentList } from '@/api/registration'
 
 export default {
   name: 'UploadExcel',
@@ -25,7 +26,8 @@ export default {
     return {
       tableData: [],
       tableHeader: [],
-      summitButton: false
+      summitButton: false,
+      classID: 0
     }
   },
   created() {
@@ -60,9 +62,35 @@ export default {
       this.tableData = results
       this.tableHeader = header
       this.summitButton = true
+      // console.log(this.tableData)
     },
     summitUpload() {
-      console.log('123')
+      console.log(this.tableData)
+      importStudentList(this.classID, this.tableData).then(response => {
+        if (!response.error) {
+          this.$confirm('成功上傳，是否跳轉到學員清單列表？', '提示', {
+            confirmButtonText: '跳轉',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$router.push({
+              path: '/status/index',
+              query: {
+                classID: this.classID,
+                t: +new Date() // 保证每次点击路由的query项都是不一样的，确保会重新刷新view
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消跳轉'
+            })
+          })
+          this.listLoading = false
+        } else {
+          this.$message.error('上傳失敗')
+        }
+      })
     }
   }
 }

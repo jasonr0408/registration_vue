@@ -33,7 +33,11 @@
             <el-input v-model="newForm.className" />
           </el-form-item>
           <el-form-item label="上課日期">
-            <el-input v-model="newForm.date" />
+            <el-date-picker
+              v-model="newForm.date"
+              type="date"
+              placeholder="选择日期"
+            />
           </el-form-item>
         </el-form>
 
@@ -48,7 +52,7 @@
 </template>
 
 <script>
-import { newClass } from '@/api/registration'
+import { newClass, getClassList } from '@/api/registration'
 
 export default {
   name: 'Dashboard',
@@ -59,29 +63,31 @@ export default {
         date: ''
       },
       addDialogVisible: false,
-      classList: [
-        {
-          'id': 123,
-          'className': '敏捷基本訓練',
-          'date': '2019-07-26'
-        }
-      ],
+      classList: [],
       classData: {
 
       },
       listLoading: true
     }
   },
-  created() {},
+  created() {
+    this.getClassListByApi()
+  },
   methods: {
+    getClassListByApi() {
+      getClassList().then(response => {
+        this.classList = response.data
+        this.listLoading = false
+      })
+    },
     summitForm() {
-      console.log('123')
       this.addDialogVisible = false
       newClass(this.newForm).then(response => {
         this.$message({
           message: '新增課程成功',
           type: 'success'
         })
+        this.getClassListByApi()
         this.listLoading = false
       })
     },
@@ -89,7 +95,7 @@ export default {
       this.$router.push({
         path: '/excel/import',
         query: {
-          classID: row.id,
+          classID: row.classID,
           t: +new Date() // 保证每次点击路由的query项都是不一样的，确保会重新刷新view
         }
       })
@@ -98,7 +104,7 @@ export default {
       this.$router.push({
         path: '/excel/export',
         query: {
-          classID: row.id,
+          classID: row.classID,
           t: +new Date() // 保证每次点击路由的query项都是不一样的，确保会重新刷新view
         }
       })
@@ -107,7 +113,7 @@ export default {
       this.$router.push({
         path: '/scan/index',
         query: {
-          classID: row.id,
+          classID: row.classID,
           t: +new Date() // 保证每次点击路由的query项都是不一样的，确保会重新刷新view
         }
       })
@@ -116,7 +122,7 @@ export default {
       this.$router.push({
         path: '/status/index',
         query: {
-          classID: row.id,
+          classID: row.classID,
           t: +new Date() // 保证每次点击路由的query项都是不一样的，确保会重新刷新view
         }
       })

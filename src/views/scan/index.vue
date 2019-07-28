@@ -21,6 +21,7 @@
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
 import { MessageBox } from 'mint-ui'
+import { checkIn } from '@/api/registration'
 
 export default {
 
@@ -38,30 +39,39 @@ export default {
     if (typeof (this.$route.query.classID) !== 'undefined') {
       this.classID = this.$route.query.classID
     } else {
-      MessageBox({
-        title: '課程ID錯誤',
-        message: '錯誤訊息',
-        confirmButtonText: '離開'
-      }).then(action => {
-        this.$router.push({
-          path: '/'
-        })
-      })
+      this.openMessageBox('錯誤訊息', '課程ID錯誤', '離開', 1)
     }
   },
 
   methods: {
+    openMessageBox(title, msg, buttonText, funcNumber) {
+      MessageBox({
+        title: title,
+        message: msg,
+        confirmButtonText: buttonText
+      }).then(action => {
+        switch (funcNumber) {
+          case 1:
+            this.$router.push({
+              path: '/'
+            })
+            break
+
+          default:
+            break
+        }
+      })
+    },
     onDecode(result) {
       // 把工號跟class id傳到server對比
       this.result = result
-      MessageBox({
-        title: '提示',
-        message: `${result}報到成功`,
-        confirmButtonText: '下一位'
-      }).then(action => {
-        this.$router.push({
-          path: '/'
-        })
+      checkIn(this.classID, { employeeID: this.result }).then(response => {
+        if (!response.error) {
+          this.openMessageBox('訊息', `${response.data}`, '繼續', 0)
+          this.listLoading = false
+        } else {
+          this.$message.error('報到失敗')
+        }
       })
     },
     goStatusPage() {
