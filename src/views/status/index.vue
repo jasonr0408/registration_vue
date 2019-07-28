@@ -11,7 +11,7 @@
       <el-table :data="list" style="width: 100%">
         <el-table-column prop="status" label="狀態">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status" type="success">報到完成</el-tag>
+            <el-tag v-if="scope.row.status" type="success">報到</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="暱稱" />

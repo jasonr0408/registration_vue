@@ -11,13 +11,17 @@
       <el-table :data="classList" style="width: 100%">
         <el-table-column align="center" prop="className" label="課程名稱" />
         <el-table-column align="center" prop="date" label="上課日期" />
-        <el-table-column align="center" label="操作">
+        <el-table-column align="center" label="操作" width="200px">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-full-screen" circle title="報到" @click="scan(scope.row)" />
-            <el-button type="primary" icon="el-icon-s-data" circle title="報到狀況" @click="enterStatus(scope.row)" />
-            <el-button type="primary" icon="el-icon-download" circle title="匯入" @click="enterImportExcel(scope.row)" />
-            <el-button type="primary" icon="el-icon-upload2" circle title="匯出" @click="exportExcel(scope.row)" />
-            <el-button type="danger" icon="el-icon-delete" circle title="刪除" @click="deleteClass(scope.row)" />
+            <el-row>
+              <el-button type="primary" icon="el-icon-full-screen" circle title="報到" @click="scan(scope.row)" />
+              <el-button type="primary" icon="el-icon-s-data" circle title="報到狀況" @click="enterStatus(scope.row)" />
+            </el-row>
+            <el-row>
+              <el-button type="primary" icon="el-icon-download" circle title="匯入" @click="enterImportExcel(scope.row)" />
+              <el-button type="primary" icon="el-icon-upload2" circle title="匯出" @click="exportExcel(scope.row)" />
+              <el-button type="danger" icon="el-icon-delete" circle title="刪除" @click="deleteClass(scope.row)" />
+            </el-row>
           </template>
         </el-table-column>
       </el-table>
@@ -25,7 +29,7 @@
       <el-dialog
         title="新增課程"
         :visible.sync="addDialogVisible"
-        width="30%"
+        width="350px"
       >
 
         <el-form ref="form" :model="newForm" label-width="100px">
