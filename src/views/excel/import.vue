@@ -65,7 +65,6 @@ export default {
       // console.log(this.tableData)
     },
     summitUpload() {
-      console.log(this.tableData)
       importStudentList(this.classID, this.tableData).then(response => {
         if (!response.error) {
           this.$confirm('成功上傳，是否跳轉到學員清單列表？', '提示', {

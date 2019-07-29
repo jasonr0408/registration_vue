@@ -70,7 +70,8 @@ export default {
           this.openMessageBox('訊息', `${response.data}`, '繼續', 0)
           this.listLoading = false
         } else {
-          this.$message.error('報到失敗')
+          this.openMessageBox('錯誤訊息', '報到失敗，API錯誤', '繼續', 0)
+          this.listLoading = false
         }
       })
     },

@@ -18,9 +18,9 @@
               <el-button type="primary" icon="el-icon-s-data" circle title="報到狀況" @click="enterStatus(scope.row)" />
             </el-row>
             <el-row>
-              <el-button type="primary" icon="el-icon-download" circle title="匯入" @click="enterImportExcel(scope.row)" />
-              <el-button type="primary" icon="el-icon-upload2" circle title="匯出" @click="exportExcel(scope.row)" />
-              <el-button type="danger" icon="el-icon-delete" circle title="刪除" @click="deleteClass(scope.row)" />
+              <el-button type="primary" icon="el-icon-upload2" circle title="匯入" @click="enterImportExcel(scope.row)" />
+              <el-button type="primary" icon="el-icon-download" circle title="匯出" @click="exportExcel(scope.row)" />
+              <el-button type="danger" icon="el-icon-delete" circle title="刪除" @click="deleteClassByApi(scope.row)" />
             </el-row>
           </template>
         </el-table-column>
@@ -40,7 +40,9 @@
             <el-date-picker
               v-model="newForm.date"
               type="date"
-              placeholder="选择日期"
+              placeholder="選擇日期"
+              format="yyyy年MM月dd日"
+              value-format="yyyy-MM-dd"
             />
           </el-form-item>
         </el-form>
@@ -56,7 +58,7 @@
 </template>
 
 <script>
-import { newClass, getClassList } from '@/api/registration'
+import { newClass, getClassList, deleteClass } from '@/api/registration'
 
 export default {
   name: 'Dashboard',
@@ -85,6 +87,13 @@ export default {
       })
     },
     summitForm() {
+      if (this.newForm.className === '' && this.newForm.date === '') {
+        this.$message({
+          message: '課程名稱與日期不能為空',
+          type: 'error'
+        })
+        return
+      }
       this.addDialogVisible = false
       newClass(this.newForm).then(response => {
         this.$message({
@@ -131,8 +140,25 @@ export default {
         }
       })
     },
-    deleteClass(row) {
-      console.log('123')
+    deleteClassByApi(row) {
+      this.$confirm('此操作將永久刪除課程，是否繼續?', '提示', {
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteClass(row.classID).then(response => {
+          this.$message({
+            message: '刪除課程成功',
+            type: 'success'
+          })
+          this.getClassListByApi()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }

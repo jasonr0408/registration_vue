@@ -15,6 +15,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="name" label="暱稱" />
+        <el-table-column prop="group" label="組別" />
         <el-table-column prop="department" label="部門名稱" />
         <el-table-column prop="employeeID" label="員工編號" />
       </el-table>

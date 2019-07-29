@@ -45,3 +45,12 @@ export function getStudentList(classID) {
     baseURL: '/go-registration'
   })
 }
+
+export function deleteClass(classID) {
+  return request({
+    url: '/class',
+    method: 'delete',
+    params: { classID: classID },
+    baseURL: '/go-registration'
+  })
+}
